@@ -19,10 +19,16 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  role      UserRole @default(PLAYER)
+  id           String    @id @default(cuid())
+  fullName     String
+  email        String    @unique
+  password     String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  phone        String?
+  profileImage String?
+
+  role         UserRole  @default(PLAYER)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

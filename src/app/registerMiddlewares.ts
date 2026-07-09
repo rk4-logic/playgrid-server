@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import { errorHandler } from "@/shared/middleware/errorHandler.js";
 
 export function registerMiddlewares(app: Express): void {
   app.use(helmet());
@@ -22,4 +23,5 @@ export function registerMiddlewares(app: Express): void {
       extended: true,
     }),
   );
+  app.use(errorHandler);
 }
