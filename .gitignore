@@ -1,27 +1,50 @@
+# ==========================
 # Dependencies
+# ==========================
 node_modules/
 
-# Build output
+# ==========================
+# Build Output
+# ==========================
 dist/
+coverage/
 
-# Environment variables
+# ==========================
+# Environment Variables
+# ==========================
 .env
-.env.local
+.env.*
+!.env.example
 
+# ==========================
 # Logs
+# ==========================
 logs/
 *.log
 npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
 
-# OS
+# ==========================
+# Operating System
+# ==========================
 .DS_Store
 Thumbs.db
 
+# ==========================
 # IDE
+# ==========================
 .vscode/settings.json
 
-# Coverage
-coverage/
-
+# ==========================
 # Prisma
+# ==========================
 prisma/dev.db
+prisma/dev.db-journal
+
+# ==========================
+# Temporary Files
+# ==========================
+*.tmp
+*.temp
+/src/generated/prisma

@@ -1,55 +1,75 @@
 {
   "compilerOptions": {
-    /* Language */
+    /* =========================
+       Language
+    ========================= */
     "target": "ES2023",
     "lib": ["ES2023"],
 
-    /* Module */
+    /* =========================
+       Module
+    ========================= */
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "verbatimModuleSyntax": true,
 
-    /* Output */
+    /* =========================
+       Output
+    ========================= */
     "rootDir": "./src",
     "outDir": "./dist",
 
-    /* Strictness */
+    /* =========================
+       Strictness
+    ========================= */
     "strict": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
 
-    /* Interop */
+    /* =========================
+       Compatibility
+    ========================= */
+    "isolatedModules": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
 
-    /* Paths */
+    /* =========================
+       Path Aliases
+    ========================= */
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
     },
 
-    /* Build */
+    /* =========================
+       Build
+    ========================= */
     "sourceMap": true,
     "declaration": true,
     "removeComments": false,
 
-    /* Safety */
+    /* =========================
+       Safety
+    ========================= */
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 
-    /* Types */
+    /* =========================
+       Types
+    ========================= */
     "types": ["node"],
 
-    /* Deprecations */
+    /* =========================
+       Temporary
+    ========================= */
     "ignoreDeprecations": "6.0"
   },
 
   "include": ["src"],
 
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

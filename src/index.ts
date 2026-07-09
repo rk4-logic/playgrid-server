@@ -1,7 +1,7 @@
-import server from "./app/server";
+import logger from "./shared/logger/logger.js";
+import { env } from "./config/env.js";
+import server from "./app/server.js";
 
-const PORT = 5000;
-
-server.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+server.listen(env.PORT, () => {
+  logger.info(`🚀 PlayGrid Server running on http://localhost:${env.PORT}`);
 });
