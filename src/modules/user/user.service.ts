@@ -1,6 +1,7 @@
 import { AppError } from "@/shared/errors/AppError.js";
 import userRepository from "./user.repository.js";
 import type { CreateUserInput } from "./user.validation.js";
+import { hashPassword } from "@/shared/utils/password.js";
 
 class UserService {
   async createUser(data: CreateUserInput) {
@@ -10,10 +11,12 @@ class UserService {
       throw new AppError("User already exists", 409);
     }
 
-    // TODO:
-    // Hash password with bcrypt here
+    const hashedPassword = await hashPassword(data.password);
 
-    return userRepository.create(data);
+    return userRepository.create({
+      ...data,
+      password: hashedPassword,
+    });
   }
 }
 
