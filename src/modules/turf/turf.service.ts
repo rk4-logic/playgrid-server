@@ -24,6 +24,10 @@ class TurfService {
 
     return turf;
   }
+
+  async getOwnerTurfs(ownerId: string) {
+    return turfRepository.findByOwnerId(ownerId);
+  }
 }
 
 export default new TurfService();

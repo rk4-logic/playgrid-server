@@ -50,6 +50,21 @@ class TurfRepository {
       },
     });
   }
+
+  async findByOwnerId(ownerId: string) {
+    return prisma.turf.findMany({
+      where: { ownerId },
+
+      include: {
+        sports: true,
+        amenities: true,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
 }
 
 export default new TurfRepository();

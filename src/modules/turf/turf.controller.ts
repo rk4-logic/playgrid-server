@@ -41,6 +41,23 @@ class TurfController {
       next(error);
     }
   }
+
+  async getMyTurfs(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        throw new AppError("Unauthorized", 401);
+      }
+
+      const turfs = await turfService.getOwnerTurfs(req.user.id);
+
+      res.status(200).json({
+        success: true,
+        data: turfs,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new TurfController();

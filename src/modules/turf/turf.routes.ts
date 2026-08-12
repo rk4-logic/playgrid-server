@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { UserRole } from "@/generated/prisma/enums.js";
 import authenticate from "@/shared/middleware/authenticate.js";
 import authorize from "@/shared/middleware/authorize.js";
 import validateRequest from "@/shared/middleware/validateRequest.js";
@@ -12,9 +13,16 @@ const router = Router();
 router.post(
   "/",
   authenticate,
-  authorize("OWNER", "ADMIN"),
+  authorize(UserRole.OWNER, UserRole.ADMIN),
   validateRequest(createTurfSchema),
   turfController.create,
+);
+
+router.get(
+  "/mine",
+  authenticate,
+  authorize(UserRole.OWNER, UserRole.ADMIN),
+  turfController.getMyTurfs,
 );
 
 router.get("/:id", turfController.getById);
