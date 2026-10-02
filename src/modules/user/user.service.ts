@@ -1,7 +1,8 @@
 import { AppError } from "@/shared/errors/AppError.js";
+import { hashPassword } from "@/shared/utils/password.js";
+
 import userRepository from "./user.repository.js";
 import type { CreateUserInput } from "./user.validation.js";
-import { hashPassword } from "@/shared/utils/password.js";
 
 class UserService {
   async createUser(data: CreateUserInput) {
@@ -13,10 +14,21 @@ class UserService {
 
     const hashedPassword = await hashPassword(data.password);
 
-    return userRepository.create({
+    const user = await userRepository.create({
       ...data,
       password: hashedPassword,
     });
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      profileImage: user.profileImage,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }
 
