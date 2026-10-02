@@ -18,6 +18,8 @@ export const createTurfSchema = z.object({
 
   longitude: z.number().optional(),
 
+  pricePerHour: z.number().positive(),
+
   sports: z.array(z.string().cuid()).min(1, "At least one sport is required"),
 
   amenities: z.array(z.string().cuid()).default([]),

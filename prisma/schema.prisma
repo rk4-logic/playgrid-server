@@ -18,55 +18,27 @@ enum UserRole {
   ADMIN
 }
 
-model User {
-  id       String @id @default(cuid())
-  fullName String
-  email    String @unique
-  password String
-
-  phone        String?
-  profileImage String?
-
-  role UserRole @default(PLAYER)
-
-  venues Venue[]
-  turfs  Turf[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }
 
-model Turf {
-  id String @id @default(cuid())
+model User {
+  id           String    @id @default(cuid())
+  fullName     String
+  email        String    @unique
+  password     String
+  phone        String?
+  profileImage String?
+  role         UserRole  @default(PLAYER)
 
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  venues       Venue[]
+  turfs        Turf[]
+  bookings     Booking[]
 
-  venueId String
-  venue   Venue  @relation(fields: [venueId], references: [id], onDelete: Cascade)
-
-  name        String
-  description String?
-
-  address String
-  city    String
-  state   String
-  pincode String
-
-  latitude  Float?
-  longitude Float?
-
-  sports    Sport[]
-  amenities Amenity[]
-
-  isActive Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([ownerId])
-  @@index([venueId])
-  @@index([city])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Sport {
@@ -119,4 +91,60 @@ model Venue {
 
   @@index([ownerId])
   @@index([city])
+}
+
+model Turf {
+  id          String @id @default(cuid())
+  ownerId     String
+  owner       User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  venueId     String
+  venue       Venue @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  address     String
+  city        String
+  state       String
+  pincode     String
+  latitude    Float?
+  longitude   Float?
+  pricePerHour Float
+
+  sports      Sport[]
+  amenities   Amenity[]
+  isActive    Boolean @default(true)
+  bookings    Booking[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([venueId])
+  @@index([city])
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  turfId      String
+  turf        Turf          @relation(fields: [turfId], references: [id], onDelete: Cascade)
+
+  bookingDate DateTime
+  startTime   DateTime
+  endTime     DateTime
+
+  totalAmount Float
+
+  status      BookingStatus @default(CONFIRMED)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([turfId])
+  @@index([bookingDate])
+  @@index([turfId, bookingDate])
 }

@@ -7,7 +7,7 @@ class TurfRepository {
       data: {
         ownerId,
         venueId: data.venueId,
-
+        pricePerHour: data.pricePerHour,
         name: data.name,
         description: data.description ?? null,
 
