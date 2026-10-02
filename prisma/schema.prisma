@@ -29,7 +29,8 @@ model User {
 
   role UserRole @default(PLAYER)
 
-  turfs Turf[]
+  venues Venue[]
+  turfs  Turf[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -40,6 +41,9 @@ model Turf {
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  venueId String
+  venue   Venue  @relation(fields: [venueId], references: [id], onDelete: Cascade)
 
   name        String
   description String?
@@ -59,6 +63,10 @@ model Turf {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([venueId])
+  @@index([city])
 }
 
 model Sport {
@@ -83,4 +91,32 @@ model Amenity {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Venue {
+  id String @id @default(cuid())
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  address String
+  city    String
+  state   String
+  pincode String
+
+  latitude  Float?
+  longitude Float?
+
+  turfs Turf[]
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([city])
 }

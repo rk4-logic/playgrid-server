@@ -6,6 +6,7 @@ class TurfRepository {
     return prisma.turf.create({
       data: {
         ownerId,
+        venueId: data.venueId,
 
         name: data.name,
         description: data.description ?? null,

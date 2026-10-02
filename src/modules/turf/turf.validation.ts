@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const createTurfSchema = z.object({
+  venueId: z.string().min(1),
   name: z.string().trim().min(3).max(100),
 
   description: z.string().trim().max(500).optional(),
