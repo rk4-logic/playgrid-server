@@ -71,6 +71,10 @@ class BookingService {
       throw new AppError(BOOKING_MESSAGES.CANNOT_CANCEL, 400);
     }
 
+    if (booking.startTime <= new Date()) {
+      throw new AppError(BOOKING_MESSAGES.CANNOT_CANCEL, 400);
+    }
+
     return bookingRepository.cancel(id);
   }
 
