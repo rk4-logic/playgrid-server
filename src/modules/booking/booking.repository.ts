@@ -54,6 +54,24 @@ class BookingRepository {
             endTime: data.endTime,
             totalAmount,
           },
+          include: {
+            turf: {
+              select: {
+                id: true,
+                name: true,
+                city: true,
+                state: true,
+                pricePerHour: true,
+                venue: {
+                  select: {
+                    id: true,
+                    name: true,
+                    address: true,
+                  },
+                },
+              },
+            },
+          },
         });
       },
       {
