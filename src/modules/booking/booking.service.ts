@@ -73,6 +73,30 @@ class BookingService {
 
     return bookingRepository.cancel(id);
   }
+
+  async getAvailability(turfId: string, date: Date) {
+    const turf = await bookingRepository.findTurfById(turfId);
+
+    if (!turf) {
+      throw new AppError(BOOKING_MESSAGES.TURF_NOT_FOUND, 404);
+    }
+
+    if (!turf.isActive) {
+      throw new AppError(BOOKING_MESSAGES.TURF_INACTIVE, 400);
+    }
+
+    const bookings = await bookingRepository.findBookingsForDate(turfId, date);
+
+    return {
+      turf: {
+        id: turf.id,
+        name: turf.name,
+        pricePerHour: turf.pricePerHour,
+      },
+      date,
+      bookings,
+    };
+  }
 }
 
 export default new BookingService();

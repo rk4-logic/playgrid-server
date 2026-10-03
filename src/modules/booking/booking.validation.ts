@@ -3,11 +3,8 @@ import { z } from "zod";
 export const createBookingSchema = z
   .object({
     turfId: z.string().min(1),
-
     bookingDate: z.coerce.date(),
-
     startTime: z.coerce.date(),
-
     endTime: z.coerce.date(),
   })
   .refine((data) => data.endTime > data.startTime, {
@@ -19,4 +16,11 @@ export const bookingIdSchema = z.object({
   id: z.string().min(1),
 });
 
+export const bookingAvailabilitySchema = z.object({
+  turfId: z.string().min(1),
+  date: z.coerce.date(),
+});
+
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
+
+export type BookingAvailabilityInput = z.infer<typeof bookingAvailabilitySchema>;

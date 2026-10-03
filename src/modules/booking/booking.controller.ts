@@ -40,6 +40,18 @@ class BookingController {
       data: booking,
     });
   }
+
+  async getAvailability(req: Request, res: Response) {
+    const availability = await bookingService.getAvailability(
+      req.query.turfId as string,
+      new Date(req.query.date as string),
+    );
+
+    res.status(200).json({
+      success: true,
+      data: availability,
+    });
+  }
 }
 
 export default new BookingController();

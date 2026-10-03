@@ -62,6 +62,20 @@ class BookingRepository {
     );
   }
 
+  async findTurfById(turfId: string) {
+    return prisma.turf.findUnique({
+      where: {
+        id: turfId,
+      },
+      select: {
+        id: true,
+        name: true,
+        pricePerHour: true,
+        isActive: true,
+      },
+    });
+  }
+
   async findById(id: string) {
     return prisma.booking.findUnique({
       where: { id },
@@ -119,6 +133,38 @@ class BookingRepository {
       where: { id },
       data: {
         status: "CANCELLED",
+      },
+    });
+  }
+
+  async findBookingsForDate(turfId: string, date: Date) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return prisma.booking.findMany({
+      where: {
+        turfId,
+        status: {
+          in: ["PENDING", "CONFIRMED"],
+        },
+        startTime: {
+          lt: endOfDay,
+        },
+        endTime: {
+          gt: startOfDay,
+        },
+      },
+      select: {
+        id: true,
+        startTime: true,
+        endTime: true,
+        status: true,
+      },
+      orderBy: {
+        startTime: "asc",
       },
     });
   }
