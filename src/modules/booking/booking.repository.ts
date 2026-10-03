@@ -1,42 +1,65 @@
 import prisma from "@/lib/prisma.js";
+import { Prisma } from "@/generated/prisma/client.js";
 
 import type { CreateBookingInput } from "./booking.validation.js";
 
 class BookingRepository {
-  async findTurfById(turfId: string) {
-    return prisma.turf.findUnique({
-      where: { id: turfId },
-    });
-  }
+  async createBookingAtomic(userId: string, data: CreateBookingInput) {
+    return prisma.$transaction(
+      async (tx) => {
+        const turf = await tx.turf.findUnique({
+          where: {
+            id: data.turfId,
+          },
+        });
 
-  async findOverlappingBooking(turfId: string, startTime: Date, endTime: Date) {
-    return prisma.booking.findFirst({
-      where: {
-        turfId,
-        status: {
-          in: ["PENDING", "CONFIRMED"],
-        },
-        startTime: {
-          lt: endTime,
-        },
-        endTime: {
-          gt: startTime,
-        },
-      },
-    });
-  }
+        if (!turf) {
+          return null;
+        }
 
-  async create(userId: string, data: CreateBookingInput, totalAmount: number) {
-    return prisma.booking.create({
-      data: {
-        userId,
-        turfId: data.turfId,
-        bookingDate: data.bookingDate,
-        startTime: data.startTime,
-        endTime: data.endTime,
-        totalAmount,
+        if (!turf.isActive) {
+          return null;
+        }
+
+        const overlappingBooking = await tx.booking.findFirst({
+          where: {
+            turfId: data.turfId,
+            status: {
+              in: ["PENDING", "CONFIRMED"],
+            },
+            startTime: {
+              lt: data.endTime,
+            },
+            endTime: {
+              gt: data.startTime,
+            },
+          },
+        });
+
+        if (overlappingBooking) {
+          throw new Error("BOOKING_SLOT_UNAVAILABLE");
+        }
+
+        const durationInHours =
+          (data.endTime.getTime() - data.startTime.getTime()) / (1000 * 60 * 60);
+
+        const totalAmount = durationInHours * turf.pricePerHour;
+
+        return tx.booking.create({
+          data: {
+            userId,
+            turfId: data.turfId,
+            bookingDate: data.bookingDate,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            totalAmount,
+          },
+        });
       },
-    });
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      },
+    );
   }
 
   async findById(id: string) {

@@ -1,3 +1,4 @@
+import { Prisma } from "@/generated/prisma/client.js";
 import { AppError } from "@/shared/errors/AppError.js";
 
 import { BOOKING_MESSAGES } from "./booking.constants.js";
@@ -6,16 +7,6 @@ import type { CreateBookingInput } from "./booking.validation.js";
 
 class BookingService {
   async createBooking(userId: string, data: CreateBookingInput) {
-    const turf = await bookingRepository.findTurfById(data.turfId);
-
-    if (!turf) {
-      throw new AppError(BOOKING_MESSAGES.TURF_NOT_FOUND, 404);
-    }
-
-    if (!turf.isActive) {
-      throw new AppError(BOOKING_MESSAGES.TURF_INACTIVE, 400);
-    }
-
     const now = new Date();
 
     if (data.startTime <= now) {
@@ -26,21 +17,25 @@ class BookingService {
       throw new AppError(BOOKING_MESSAGES.INVALID_TIME_RANGE, 400);
     }
 
-    const overlappingBooking = await bookingRepository.findOverlappingBooking(
-      data.turfId,
-      data.startTime,
-      data.endTime,
-    );
+    try {
+      const booking = await bookingRepository.createBookingAtomic(userId, data);
 
-    if (overlappingBooking) {
-      throw new AppError(BOOKING_MESSAGES.SLOT_UNAVAILABLE, 409);
+      if (!booking) {
+        throw new AppError(BOOKING_MESSAGES.TURF_NOT_FOUND, 404);
+      }
+
+      return booking;
+    } catch (error) {
+      if (error instanceof Error && error.message === "BOOKING_SLOT_UNAVAILABLE") {
+        throw new AppError(BOOKING_MESSAGES.SLOT_UNAVAILABLE, 409);
+      }
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2034") {
+        throw new AppError(BOOKING_MESSAGES.SLOT_UNAVAILABLE, 409);
+      }
+
+      throw error;
     }
-
-    const durationInHours = (data.endTime.getTime() - data.startTime.getTime()) / (1000 * 60 * 60);
-
-    const totalAmount = durationInHours * turf.pricePerHour;
-
-    return bookingRepository.create(userId, data, totalAmount);
   }
 
   async getBookingById(id: string, userId: string) {
