@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import authenticate from "@/shared/middleware/authenticate.js";
 import validateRequest from "@/shared/middleware/validateRequest.js";
+import authenticate from "@/shared/middleware/authenticate.js";
 
 import bookingController from "./booking.controller.js";
 import {
@@ -12,15 +12,24 @@ import {
 
 const router = Router();
 
-router.use(authenticate);
-
-router.post("/", validateRequest(createBookingSchema), bookingController.createBooking);
-
+/**
+ * Public
+ *
+ * Players should be able to inspect availability before
+ * being forced to log in.
+ */
 router.get(
   "/availability",
   validateRequest(bookingAvailabilitySchema),
   bookingController.getAvailability,
 );
+
+/**
+ * Authenticated booking actions
+ */
+router.use(authenticate);
+
+router.post("/", validateRequest(createBookingSchema), bookingController.createBooking);
 
 router.get("/my", bookingController.getMyBookings);
 
