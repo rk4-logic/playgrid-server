@@ -14,8 +14,8 @@ const registerRoutes = (app: Express) => {
   app.use("/api/v1/venues", venueRoutes);
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/bookings", bookingRoutes);
-  app.use("/sports", sportRoutes);
-  app.use("/amenities", amenityRoutes);
+  app.use("/api/v1/sports", sportRoutes);
+  app.use("/api/v1/amenities", amenityRoutes);
 };
 
 export default registerRoutes;

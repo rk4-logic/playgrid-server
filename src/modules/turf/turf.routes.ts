@@ -8,6 +8,14 @@ import { createTurfSchema, updateTurfSchema } from "./turf.validation.js";
 
 const router = Router();
 
+// Specific routes must come before the dynamic "/:id" route.
+router.get(
+  "/mine",
+  authenticate,
+  authorize(UserRole.OWNER, UserRole.ADMIN),
+  turfController.getMyTurfs,
+);
+
 // Public endpoints
 router.get("/", turfController.listPublic);
 router.get("/:id", turfController.getById);
@@ -19,13 +27,6 @@ router.post(
   authorize(UserRole.OWNER, UserRole.ADMIN),
   validateRequest(createTurfSchema),
   turfController.create,
-);
-
-router.get(
-  "/mine",
-  authenticate,
-  authorize(UserRole.OWNER, UserRole.ADMIN),
-  turfController.getMyTurfs,
 );
 
 router.patch(
