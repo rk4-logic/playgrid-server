@@ -12,26 +12,19 @@ import {
 
 const router = Router();
 
-/**
- * Public
- *
- * Players should be able to inspect availability before
- * being forced to log in.
- */
+// Public: inspect available slots before logging in.
 router.get(
   "/availability",
   validateRequest(bookingAvailabilitySchema, "query"),
   bookingController.getAvailability,
 );
 
-/**
- * Authenticated booking actions
- */
+// All routes below this point require authentication.
 router.use(authenticate);
 
 router.post("/", validateRequest(createBookingSchema), bookingController.createBooking);
 
-router.get("/my", bookingController.getMyBookings);
+router.get("/mine", bookingController.getMyBookings);
 
 router.get("/:id", validateRequest(bookingIdSchema), bookingController.getBookingById);
 

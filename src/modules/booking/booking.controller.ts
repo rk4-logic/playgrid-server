@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import bookingService from "./booking.service.js";
+import { AppError } from "@/shared/errors/AppError.js";
 
 class BookingController {
   async createBooking(req: Request, res: Response) {
@@ -23,9 +24,15 @@ class BookingController {
   }
 
   async getMyBookings(req: Request, res: Response) {
-    const bookings = await bookingService.getMyBookings(req.user!.id);
+    const userId = req.user?.id;
 
-    res.status(200).json({
+    if (!userId) {
+      throw new AppError("Authentication required", 401);
+    }
+
+    const bookings = await bookingService.getMyBookings(userId);
+
+    return res.status(200).json({
       success: true,
       data: bookings,
     });

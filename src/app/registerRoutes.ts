@@ -7,6 +7,7 @@ import { authRoutes } from "@/modules/auth/index.js";
 import { bookingRoutes } from "@/modules/booking/index.js";
 import { sportRoutes } from "@/modules/sports/index.js";
 import { amenityRoutes } from "@/modules/amenity/index.js";
+import ownerRoutes from "@/modules/owner/owner.routes.js";
 
 const registerRoutes = (app: Express) => {
   app.use("/api/v1/users", userRoutes);
@@ -16,6 +17,7 @@ const registerRoutes = (app: Express) => {
   app.use("/api/v1/bookings", bookingRoutes);
   app.use("/api/v1/sports", sportRoutes);
   app.use("/api/v1/amenities", amenityRoutes);
+  app.use("/api/v1/owner", ownerRoutes);
 };
 
 export default registerRoutes;
