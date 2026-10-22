@@ -15,8 +15,10 @@ class UserRepository {
   }
 
   async create(data: CreateUserInput) {
+    const { role, ...userData } = data;
     const createData = {
-      ...data,
+      ...userData,
+      ...(role !== undefined ? { role } : {}),
       phone: data.phone ?? null,
       profileImage: data.profileImage ?? null,
     };

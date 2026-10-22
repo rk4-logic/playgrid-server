@@ -16,7 +16,7 @@ class TurfController {
     try {
       if (!req.user) throw new AppError("Unauthorized", 401);
 
-      const turf = await turfService.createTurf(req.user.id, req.body);
+      const turf = await turfService.createTurf(req.user.id, req.user.role, req.body);
 
       res.status(201).json({
         success: true,
@@ -64,7 +64,7 @@ class TurfController {
     try {
       if (!req.user) throw new AppError("Unauthorized", 401);
 
-      const turfs = await turfService.getOwnerTurfs(req.user.id);
+      const turfs = await turfService.getOwnerTurfs(req.user.id, req.user.role);
 
       res.status(200).json({ success: true, data: turfs });
     } catch (error) {
@@ -78,7 +78,7 @@ class TurfController {
 
       const id = getTurfId(req.params.id);
 
-      const turf = await turfService.updateTurf(id, req.user.id, req.body);
+      const turf = await turfService.updateTurf(id, req.user.id, req.user.role, req.body);
 
       res.status(200).json({
         success: true,
@@ -96,7 +96,7 @@ class TurfController {
 
       const id = getTurfId(req.params.id);
 
-      await turfService.deleteTurf(id, req.user.id);
+      await turfService.deleteTurf(id, req.user.id, req.user.role);
 
       res.status(200).json({
         success: true,

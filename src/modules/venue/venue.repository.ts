@@ -44,6 +44,17 @@ class VenueRepository {
     });
   }
 
+  async findAll() {
+    return prisma.venue.findMany({
+      include: {
+        turfs: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
   async update(id: string, data: UpdateVenueInput) {
     const updateData = Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined),

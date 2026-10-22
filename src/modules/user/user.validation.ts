@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserRole } from "@/generated/prisma/enums.js";
 
 export const createUserSchema = z.object({
   fullName: z.string().trim().min(3, "Full name must be at least 3 characters").max(100),
@@ -10,6 +11,8 @@ export const createUserSchema = z.object({
   phone: z.string().optional(),
 
   profileImage: z.url().optional(),
+
+  role: z.enum([UserRole.PLAYER, UserRole.OWNER]).optional(),
 });
 
 export const updateUserSchema = createUserSchema

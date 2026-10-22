@@ -49,7 +49,7 @@ class VenueController {
         throw new AppError("Unauthorized", 401);
       }
 
-      const venues = await venueService.getMyVenues(req.user.id);
+      const venues = await venueService.getMyVenues(req.user.id, req.user.role);
 
       res.status(200).json({
         success: true,
@@ -74,7 +74,7 @@ class VenueController {
 
       const data = updateVenueSchema.parse(req.body);
 
-      const venue = await venueService.updateVenue(id, req.user.id, data);
+      const venue = await venueService.updateVenue(id, req.user.id, req.user.role, data);
 
       res.status(200).json({
         success: true,
@@ -98,7 +98,7 @@ class VenueController {
         throw new AppError("Invalid Venue ID", 400);
       }
 
-      await venueService.deleteVenue(id, req.user.id);
+      await venueService.deleteVenue(id, req.user.id, req.user.role);
 
       res.status(204).send();
     } catch (error) {

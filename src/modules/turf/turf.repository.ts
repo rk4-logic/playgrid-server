@@ -66,6 +66,20 @@ class TurfRepository {
     });
   }
 
+  async findAll() {
+    return prisma.turf.findMany({
+      include: {
+        sports: true,
+        amenities: true,
+        venue: true,
+        _count: {
+          select: { bookings: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   async findPublic(query: ListTurfsQuery) {
     const where = {
       isActive: true,
