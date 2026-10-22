@@ -20,7 +20,7 @@ const router = Router();
  */
 router.get(
   "/availability",
-  validateRequest(bookingAvailabilitySchema),
+  validateRequest(bookingAvailabilitySchema, "query"),
   bookingController.getAvailability,
 );
 
